@@ -145,6 +145,8 @@ grids = 0
 for p, r in pages.items():
     fp = os.path.join(OUT, r)
     s = open(fp, encoding='utf-8', errors='replace').read()
+    # Authorized contact replacement throughout page HTML, attributes and inline scripts.
+    s = s.replace('9922099292', '9595940959')
     for pat in strip_patterns:
         s = pat.sub('', s)
     for pat, rep in dev_patterns:
@@ -167,7 +169,7 @@ for p, r in pages.items():
                       '<div class="row products pro-list-view-row mr-0">' + count + ''.join(cards) + '</div>', 1)
         s = s.replace('displayprod(siteurl,where, 1);', '/* listing is static on the test copy */ $(".itmtocount").html("%d Items");' % len(items))
         grids += 1
-    s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\n' + HEAD_INJECT, s, count=1, flags=re.I)
+    # Keep canonical/og URL on .com; other source references remain until link audit.\n    s = re.sub(r'(<link[^>]+rel=[\"\\\']canonical[\"\\\'][^>]+href=[\"\\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)\n    s = re.sub(r'(<meta[^>]+property=[\"\\\']og:url[\"\\\'][^>]+content=[\"\\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)\n    s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\\n' + HEAD_INJECT, s, count=1, flags=re.I)
     s = re.sub(r'(<body[^>]*>)', lambda m: m.group(1) + BANNER, s, count=1, flags=re.I)
     open(fp, 'w', encoding='utf-8').write(s)
 
@@ -175,7 +177,7 @@ for root, _, files in os.walk(OUT):
     for f in files:
         if f.endswith(('.css', '.js', '.txt', '.xml', '.json')):
             fp = os.path.join(root, f)
-            t = open(fp, encoding='utf-8', errors='replace').read(); t2 = t
+            t = open(fp, encoding='utf-8', errors='replace').read(); t2 = t.replace('9922099292', '9595940959')
             for pat, rep in dev_patterns[3:]:
                 t2 = pat.sub(rep, t2)
             if t2 != t:
