@@ -169,7 +169,10 @@ for p, r in pages.items():
                       '<div class="row products pro-list-view-row mr-0">' + count + ''.join(cards) + '</div>', 1)
         s = s.replace('displayprod(siteurl,where, 1);', '/* listing is static on the test copy */ $(".itmtocount").html("%d Items");' % len(items))
         grids += 1
-    # Keep canonical/og URL on .com; other source references remain until link audit.\n    s = re.sub(r'(<link[^>]+rel=[\"\\\']canonical[\"\\\'][^>]+href=[\"\\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)\n    s = re.sub(r'(<meta[^>]+property=[\"\\\']og:url[\"\\\'][^>]+content=[\"\\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)\n    s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\\n' + HEAD_INJECT, s, count=1, flags=re.I)
+    # Keep canonical/og URL on .com; source commerce actions remain routed to .in.
+    s = re.sub(r'(<link[^>]+rel=["\\']canonical["\\'][^>]+href=["\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)
+    s = re.sub(r'(<meta[^>]+property=["\\']og:url["\\'][^>]+content=["\\'])https?://(?:www\\.)?arcsuspension\\.in', r'\\1https://arcsuspension.com', s, flags=re.I)
+    s = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + '\\n' + HEAD_INJECT, s, count=1, flags=re.I)
     s = re.sub(r'(<body[^>]*>)', lambda m: m.group(1) + BANNER, s, count=1, flags=re.I)
     open(fp, 'w', encoding='utf-8').write(s)
 
